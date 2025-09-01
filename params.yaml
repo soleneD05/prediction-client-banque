@@ -1,0 +1,9 @@
+data:
+  raw_data_link: https://raw.githubusercontent.com/jslhost/dataset_repo/refs/heads/main/Churn_Modelling.csv
+  raw_dataset_path: data/raw_dataset.csv
+  clean_dataset_path: data/clean_dataset.csv
+  columns_to_drop:
+    - RowNumber
+    - CustomerId
+model:
+  path: model.pkl
