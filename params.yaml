@@ -1,9 +1,59 @@
 data:
-  raw_data_link: https://raw.githubusercontent.com/jslhost/dataset_repo/refs/heads/main/Churn_Modelling.csv
-  raw_dataset_path: data/raw_dataset.csv
-  clean_dataset_path: data/clean_dataset.csv
+  # Raw data source
+  raw_data_link: "https://raw.githubusercontent.com/jslhost/dataset_repo/refs/heads/main/Churn_Modelling.csv"
+  raw_dataset_path: "data/raw_dataset.csv"
+  
+  # Cleaned data path
+  clean_dataset_path: "data/clean_dataset.csv"
+  
+  # Columns to drop during cleaning 
   columns_to_drop:
-    - RowNumber
-    - CustomerId
+    - "RowNumber"
+    - "CustomerId" 
+    - "Surname"
+  
+  # Target variable 
+  target_column: "Exited"  # 1 = customer churned, 0 = customer stayed
+  
+  # Preprocessed data paths
+  X_train_path: "data/X_train.csv"
+  X_test_path: "data/X_test.csv"
+  y_train_path: "data/y_train.csv"
+  y_test_path: "data/y_test.csv"
+
+preprocessing:
+  categorical_columns:
+    - "Geography" 
+    - "Gender"
+  
+  # Train/test split settings
+  test_size: 0.2      # 20% for testing, 80% for training
+  random_state: 42    # For reproducible results
+  
+  # Paths to save preprocessing tools
+  encoders_path: "data/encoders.pkl"  # Label encoders for categorical variables
+  scaler_path: "data/scaler.pkl"      # Standard scaler for numerical variables
+
 model:
-  path: model.pkl
+  # Trained model save path
+  path: "data/model.pkl"
+  
+  # Model type to use
+  type: "random_forest"  # or "logistic_regression"
+  
+  # General settings
+  random_state: 42
+  
+  # Random Forest specific parameters
+  random_forest:
+    n_estimators: 100    # Number of trees
+    max_depth: 10        # Maximum depth of trees
+  
+  # Logistic Regression specific parameters  
+  logistic_regression:
+    max_iter: 1000       # Maximum iterations
+
+evaluation:
+  # Paths for evaluation results
+  metrics_path: "data/evaluation_metrics.csv"
+  plots_path: "data/evaluation_plots.png"
