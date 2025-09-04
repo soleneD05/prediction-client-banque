@@ -26,4 +26,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: solenedegrutere/data-pipeline:latest
+          tags: solenedegrutere/data-pipeline:v2
