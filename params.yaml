@@ -6,14 +6,13 @@ data:
   # Cleaned data path
   clean_dataset_path: "data/clean_dataset.csv"
   
-  # Columns to drop during cleaning 
+  # Columns to drop during cleaning
   columns_to_drop:
     - "RowNumber"
     - "CustomerId" 
-    - "Surname"
   
   # Target variable 
-  target_column: "Exited"  # 1 = customer churned, 0 = customer stayed
+  target_column: "Exited"
   
   # Preprocessed data paths
   X_train_path: "data/X_train.csv"
@@ -25,35 +24,73 @@ preprocessing:
   categorical_columns:
     - "Geography" 
     - "Gender"
+    - "Surname"
   
-  # Train/test split settings
-  test_size: 0.2      # 20% for testing, 80% for training
-  random_state: 42    # For reproducible results
-  
-  # Paths to save preprocessing tools
-  encoders_path: "data/encoders.pkl"  # Label encoders for categorical variables
-  scaler_path: "data/scaler.pkl"      # Standard scaler for numerical variables
-
-model:
-  # Trained model save path
-  path: "data/model.pkl"
-  
-  # Model type to use
-  type: "random_forest"  # or "logistic_regression"
-  
-  # General settings
+  test_size: 0.2
   random_state: 42
   
-  # Random Forest specific parameters
-  random_forest:
-    n_estimators: 100    # Number of trees
-    max_depth: 10        # Maximum depth of trees
+  encoders_path: "data/encoders.pkl"
+  scaler_path: "data/scaler.pkl"
+  preprocessor_path: "preprocessor.pkl"  # 👈 NOUVEAU: pour l'API
+
+# Model Selection Configuration
+model_selection:
+  cv_folds: 5
+  scoring_metric: "f1"
   
-  # Logistic Regression specific parameters  
-  logistic_regression:
-    max_iter: 1000       # Maximum iterations
+  models:
+    # Random Forest with hyperparameter tuning
+    random_forest:
+      param_grid:
+        n_estimators: [50, 100, 200]
+        max_depth: [5, 10, 15, null]
+        min_samples_split: [2, 5, 10]
+        min_samples_leaf: [1, 2, 4]
+        max_features: ["sqrt", "log2", null]
+    
+    # Logistic Regression
+    logistic_regression:
+      param_grid:
+        C: [0.01, 0.1, 1.0, 10.0, 100.0]
+        solver: ["liblinear", "lbfgs"]
+        penalty: ["l1", "l2"]
+    
+    # Gradient Boosting
+    gradient_boosting:
+      param_grid:
+        n_estimators: [50, 100, 200]
+        learning_rate: [0.01, 0.1, 0.2]
+        max_depth: [3, 5, 7]
+        subsample: [0.8, 0.9, 1.0]
+    
+    # Support Vector Machine
+    svm:
+      param_grid:
+        C: [0.1, 1.0, 10.0]
+        kernel: ["rbf", "linear"]
+        gamma: ["scale", "auto"]
+
+model:
+  path: "model.pkl"  # 👈 Votre modèle sera ici
+  type: "auto_selected"
+  random_state: 42
 
 evaluation:
-  # Paths for evaluation results
   metrics_path: "data/evaluation_metrics.csv"
   plots_path: "data/evaluation_plots.png"
+  model_comparison_path: "data/model_comparison.csv"
+  feature_importance_path: "data/feature_importance.csv"
+  
+  thresholds:
+    excellent_f1: 0.80
+    good_f1_score: 0.70
+    moderate_f1_score: 0.60
+    min_accuracy: 0.75
+    min_roc_auc: 0.70
+
+api:
+  title: "Advanced Churn Prediction API"
+  description: "API avec sélection automatique du meilleur modèle ML"
+  version: "2.0.0"
+  host: "0.0.0.0"
+  port: 8000
