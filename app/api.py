@@ -63,7 +63,7 @@ def preprocess_data(df):
 
 @app.post("/predict", tags=["Predict"])
 async def predict(data: CustomerData) -> str:
-    """Prédit si un client va churner"""
+    """Prédit si un client va churner""" 
     df = pd.DataFrame([data.model_dump()])
     preprocessed_data = preprocess_data(df)
     prediction = model.predict(preprocessed_data)[0]
